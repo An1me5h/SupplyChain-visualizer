@@ -10,6 +10,10 @@ data/
 *.xls
 *.csv
 
+# But allow the bundled demo dataset
+!demo/
+!demo/*
+
 # Old superseded CSS file
 styles.css
 

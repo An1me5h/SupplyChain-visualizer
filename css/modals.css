@@ -748,18 +748,16 @@
       justify-content: center;
     }
 
-    .startup-skip {
-      background: none;
-      border: 0;
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      padding: 4px;
-      text-decoration: underline;
+    .startup-demo-btn {
+      background: var(--surface-2);
+      color: var(--ink);
     }
 
-    .startup-skip:hover { color: var(--ink); }
+    .startup-actions .action-btn:disabled {
+      opacity: 0.38;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
 
     /* ── Node view analytics section ─────────────────────────── */
     .nv-analytics-section {
