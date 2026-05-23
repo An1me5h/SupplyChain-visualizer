@@ -1,0 +1,70 @@
+    .link-hit {
+      stroke: transparent;
+      stroke-width: 18;
+      fill: none;
+      pointer-events: stroke;
+      cursor: pointer;
+    }
+
+    .link-line {
+      stroke: #8c97a3;
+      stroke-width: 3;
+      fill: none;
+      marker-end: url(#arrow-default);
+    }
+
+    .link-line.ok {
+      stroke: var(--ok);
+      marker-end: url(#arrow-ok);
+    }
+
+    .link-line.warning {
+      stroke: var(--warning);
+      marker-end: url(#arrow-warning);
+    }
+
+    .link-line.critical {
+      stroke: var(--critical);
+      marker-end: url(#arrow-critical);
+    }
+
+    .link-line.blocked {
+      stroke: var(--blocked);
+      marker-end: url(#arrow-blocked);
+    }
+
+    .link-line.selected {
+      stroke-width: 4;
+      filter: drop-shadow(0 0 7px rgba(22, 127, 107, 0.28));
+    }
+
+    .wip-pill {
+      cursor: grab;
+      pointer-events: all;
+    }
+
+    .wip-pill:active {
+      cursor: grabbing;
+    }
+
+    .wip-pill rect {
+      fill: #15191e;
+      stroke: rgba(255, 255, 255, 0.6);
+      stroke-width: 1;
+    }
+
+    .wip-pill text {
+      fill: #ffffff;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 800;
+      text-anchor: middle;
+      dominant-baseline: middle;
+      pointer-events: none;
+    }
+
+    /* ── Yellow badge for links with no transit time ── */
+    .wip-pill--unknown rect {
+      fill: #7a4e00;
+      stroke: rgba(255, 185, 40, 0.85);
+    }

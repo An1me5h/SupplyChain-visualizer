@@ -1,0 +1,274 @@
+    .node {
+      position: absolute;
+      width: 168px;
+      min-height: 108px;
+      transform: translate3d(var(--x), var(--y), 0);
+      border: 1px solid var(--line-strong);
+      border-left: 6px solid #8c97a3;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 10px 22px rgba(20, 28, 36, 0.12);
+      user-select: none;
+      cursor: grab;
+      overflow: hidden;
+    }
+
+    .node:active {
+      cursor: grabbing;
+    }
+
+    .node.ok {
+      border-left-color: var(--ok);
+    }
+
+    .node.warning {
+      border-left-color: var(--warning);
+    }
+
+    .node.critical {
+      border-left-color: var(--critical);
+    }
+
+    .node.blocked {
+      border-left-color: var(--blocked);
+    }
+
+    .node.selected {
+      border-color: #16231f;
+      box-shadow: 0 0 0 3px rgba(22, 127, 107, 0.18), 0 14px 34px rgba(20, 28, 36, 0.18);
+    }
+
+    .node.connection-source {
+      box-shadow: 0 0 0 3px rgba(46, 111, 186, 0.28), 0 14px 34px rgba(20, 28, 36, 0.18);
+    }
+
+    .node.match-hidden {
+      opacity: 0.18;
+    }
+
+    .node-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 10px 6px;
+      min-width: 0;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #8c97a3;
+      flex: 0 0 auto;
+    }
+
+    .node.ok .status-dot {
+      background: var(--ok);
+    }
+
+    .node.warning .status-dot {
+      background: var(--warning);
+    }
+
+    .node.critical .status-dot {
+      background: var(--critical);
+    }
+
+    .node.blocked .status-dot {
+      background: var(--blocked);
+    }
+
+    .node-title {
+      min-width: 0;
+      font-weight: 900;
+      font-size: 13px;
+      line-height: 1.1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .node-type {
+      padding: 0 10px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .node-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      margin-top: 10px;
+      border-top: 1px solid var(--line);
+      background: var(--line);
+    }
+
+    .node-metric {
+      min-width: 0;
+      padding: 7px 6px;
+      background: #fbfcfd;
+    }
+
+    .node-metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .node-metric strong {
+      display: block;
+      margin-top: 2px;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.05;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .node-metric.neg-inv {
+      background: #fff5f5;
+    }
+    .node-metric.neg-inv strong {
+      color: #d94f4f;
+    }
+
+
+    /* ── Node class visual styling ─────────────────────────────────── */
+
+    /* Source node: soft green-teal tint */
+    .node.nc-source {
+      border-color: #2ea87e;
+      background: linear-gradient(135deg, #edfaf3 0%, #ffffff 100%);
+    }
+    .node.nc-source .node-top .status-dot { background: #2ea87e; }
+
+    /* Compound node: indigo accent with ▶▶ indicator */
+    .node.nc-compound {
+      border-color: #5b6fff;
+      background: linear-gradient(135deg, #f0f1ff 0%, #ffffff 100%);
+      cursor: pointer;
+    }
+    .node.nc-compound:hover { border-color: #3a4eee; box-shadow: 0 0 0 3px rgba(91,111,255,.18); }
+    .node.nc-compound .node-top .status-dot { background: #5b6fff; }
+    /* ── Collapse button ── */
+    .node-collapse-btn {
+      margin-left: auto;
+      background: none;
+      padding: 1px 4px;
+      font-size: 8px;
+      color: var(--muted);
+      border-radius: 3px;
+      line-height: 1;
+      flex-shrink: 0;
+      pointer-events: auto;
+    }
+    .node-collapse-btn:hover {
+      background: var(--surface-2);
+      color: var(--ink);
+    }
+
+    /* ── Collapsed node ── */
+    .node.nc-collapsed {
+      height: 36px !important;
+      min-height: 36px !important;
+      overflow: hidden;
+    }
+    .node.nc-collapsed .node-type,
+    .node.nc-collapsed .node-metrics {
+      display: none;
+    }
+
+    .nc-badge {
+      margin-left: auto;
+      font-size: 9px;
+      color: #5b6fff;
+      opacity: .7;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* Ledger node: amber tint — accumulates running totals */
+    .node.nc-ledger {
+      border-color: #c07c00;
+      background: linear-gradient(135deg, #fff9eb 0%, #ffffff 100%);
+    }
+    .node.nc-ledger .node-top .status-dot { background: #c07c00; }
+
+    /* Register node: mauve tint — shows latest snapshot values */
+    .node.nc-register {
+      border-color: #8b5cf6;
+      background: linear-gradient(135deg, #f5f0ff 0%, #ffffff 100%);
+    }
+    .node.nc-register .node-top .status-dot { background: #8b5cf6; }
+
+    /* ── In-Transit node — rectangular pass-through hub ──────────────── */
+    .node.nc-transit {
+      background: linear-gradient(135deg, #eef6ff 0%, #ddeeff 100%);
+      border-color: #7ab8e8;
+      box-shadow: 0 2px 10px rgba(91,155,213,0.18);
+    }
+    .node.nc-transit .node-top .status-dot { background: #1558a0; }
+    .node.nc-transit:hover {
+      border-color: #4a97d8;
+      box-shadow: 0 3px 14px rgba(91,155,213,0.32);
+    }
+    .node.nc-transit.selected {
+      border-color: #1558a0;
+      border-width: 2.5px;
+      box-shadow: 0 0 0 4px rgba(91,155,213,0.3);
+    }
+
+    /* Consumption node: teal/green tint — BOM production tracking */
+    .node.nc-consumption {
+      border-color: #0e9e6e;
+      background: linear-gradient(135deg, #eafaf4 0%, #ffffff 100%);
+    }
+    .node.nc-consumption .node-top .status-dot { background: #0e9e6e; }
+
+    /* ── Compound breadcrumb bar ───────────────────────────────────── */
+    .compound-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 4px;
+    }
+    .compound-back-btn {
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      padding: 3px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+    .compound-back-btn:hover { background: var(--line); }
+    .compound-crumb-path {
+      font-size: 12px;
+      color: var(--muted);
+      max-width: 260px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* ── Returns chip on Source nodes ─────────────────────────────── */
+    .node-metric.return-chip {
+      background: rgba(180, 107, 0, .12);
+      border-color: rgba(180, 107, 0, .35);
+      color: #b46b00;
+    }
+    .node-metric.return-chip strong { color: #8a5000; }

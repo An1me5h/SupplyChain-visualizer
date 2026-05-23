@@ -1,0 +1,485 @@
+    .canvas-shell {
+      --grid-size: 28px;
+      position: relative;
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
+      background:
+        linear-gradient(90deg, rgba(31, 40, 50, 0.05) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(31, 40, 50, 0.05) 1px, transparent 1px),
+        #f7f8fa;
+      background-size: var(--grid-size) var(--grid-size);
+    }
+
+    .canvas-head {
+      position: absolute;
+      left: 16px;
+      top: 16px;
+      right: 16px;
+      z-index: 4;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .mode-chip,
+    .selection-chip {
+      min-width: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 34px;
+      padding: 0 11px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 8px 28px rgba(30, 36, 44, 0.08);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      pointer-events: auto;
+    }
+
+    .mode-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex: 0 0 auto;
+    }
+
+    .search-box {
+      width: min(280px, 34vw);
+      height: 34px;
+      padding: 0 11px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--ink);
+      box-shadow: 0 8px 28px rgba(30, 36, 44, 0.08);
+      font-size: 13px;
+      pointer-events: auto;
+    }
+
+    .filter-select {
+      height: 34px;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.92);
+      color: var(--ink);
+      box-shadow: 0 8px 28px rgba(30,36,44,0.08);
+      font-size: 12px;
+      pointer-events: auto;
+      min-width: 180px;
+      max-width: 220px;
+    }
+
+    .day-filter-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      height: 34px;
+      padding: 0 11px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.92);
+      box-shadow: 0 8px 28px rgba(30,36,44,0.08);
+      font-size: 12px;
+      pointer-events: auto;
+      white-space: nowrap;
+    }
+
+    .day-filter-label {
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+
+    #daySlider {
+      width: 100px;
+      accent-color: var(--accent);
+    }
+
+    .day-filter-date {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink);
+      min-width: 80px;
+    }
+
+    .day-filter-clear {
+      background: none;
+      border: 0;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 2px 4px;
+      border-radius: 4px;
+      font-size: 13px;
+      line-height: 1;
+    }
+    .day-filter-clear:hover { color: var(--ink); background: var(--surface-2); }
+
+    .time-display {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      min-width: 38px;
+      text-align: center;
+      letter-spacing: 0.5px;
+    }
+
+    .day-date-picker {
+      height: 26px;
+      padding: 0 6px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 600;
+      max-width: 130px;
+    }
+
+    .day-nav-btn {
+      background: none;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      color: var(--ink);
+      font-size: 16px;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .day-nav-btn:hover { background: var(--surface-2); border-color: var(--accent); }
+
+    /* Part combobox */
+    .part-combo {
+      position: relative;
+      pointer-events: auto;
+    }
+
+    /* ── Node code combo (source node edit panel) ─────────────────── */
+    .node-code-combo {
+      position: relative;
+      width: 100%;
+    }
+    .node-code-combo-input {
+      width: 100%;
+      box-sizing: border-box;
+      height: 34px;
+      padding: 0 11px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      font-size: 13px;
+      background: var(--surface-1);
+      color: var(--text-1);
+      outline: none;
+    }
+    .node-code-combo-input:focus { border-color: var(--accent); }
+    .node-code-combo-dropdown {
+      position: absolute;
+      top: calc(100% + 3px);
+      left: 0;
+      right: 0;
+      background: var(--surface-1);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      box-shadow: 0 8px 24px rgba(18,24,32,0.14);
+      z-index: 300;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+
+    .part-combo-input {
+      height: 34px;
+      padding: 0 11px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.92);
+      color: var(--ink);
+      box-shadow: 0 8px 28px rgba(30,36,44,0.08);
+      font-size: 12px;
+      width: 190px;
+      outline: none;
+    }
+
+    .part-combo-input:focus {
+      border-color: var(--accent);
+    }
+
+    .part-combo-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      min-width: 220px;
+      max-height: 240px;
+      overflow-y: auto;
+      background: var(--surface);
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      box-shadow: 0 12px 32px rgba(18,24,32,0.16);
+      z-index: 100;
+    }
+
+    .part-combo-item {
+      padding: 8px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--line);
+      white-space: nowrap;
+    }
+
+    .part-combo-item:last-child { border-bottom: 0; }
+
+    .part-combo-item:hover,
+    .part-combo-item.active {
+      background: #e8f4ef;
+      color: var(--accent);
+    }
+
+    .part-combo-clear {
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    /* Part highlight/dim */
+    .node.part-highlight {
+      outline: 3px solid #ffd27a;
+      outline-offset: 3px;
+      box-shadow: 0 0 0 6px rgba(255,210,122,0.25), 0 4px 20px rgba(255,185,40,0.35) !important;
+      z-index: 5;
+    }
+    .node.part-dimmed {
+      opacity: 0.22;
+      pointer-events: none;
+    }
+    .link.part-dimmed-link path.link-line {
+      opacity: 0.12;
+    }
+    .link.part-highlight-link path.link-line {
+      stroke-width: 3;
+    }
+
+    .zoom-controls {
+      display: inline-grid;
+      grid-template-columns: 34px minmax(54px, auto) 34px 44px;
+      align-items: center;
+      height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 8px 28px rgba(30, 36, 44, 0.08);
+      pointer-events: auto;
+    }
+
+    .zoom-controls button {
+      height: 34px;
+      border-right: 1px solid var(--line);
+      background: transparent;
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .zoom-controls button:last-child {
+      border-right: 0;
+      font-size: 11px;
+    }
+
+    .zoom-controls button:hover {
+      background: #edf4f1;
+    }
+
+    .zoom-controls span {
+      padding: 0 9px;
+      border-right: 1px solid var(--line);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 900;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .network-canvas {
+      --zoom: 1;
+      --pan-x: 0;
+      --pan-y: 0;
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      outline: none;
+      cursor: default;
+    }
+
+    .network-canvas.tool-add {
+      cursor: crosshair;
+    }
+
+    .network-canvas.tool-compound {
+      cursor: crosshair;
+    }
+
+    .network-canvas.tool-connect {
+      cursor: cell;
+    }
+
+    .network-canvas.tool-delete {
+      cursor: not-allowed;
+    }
+
+    .network-canvas.tool-pan {
+      cursor: grab;
+    }
+
+    .network-canvas.is-panning {
+      cursor: grabbing;
+    }
+
+    .group-layer,
+    .link-layer,
+    .node-layer,
+    .port-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      transform: matrix(var(--zoom), 0, 0, var(--zoom), var(--pan-x), var(--pan-y));
+      transform-origin: 0 0;
+    }
+
+    .group-layer {
+      z-index: 0;
+      overflow: visible;
+      pointer-events: none;
+    }
+
+    .group-box {
+      pointer-events: all;
+      cursor: pointer;
+    }
+
+    .group-label-bg {
+      /* tinted label tag on group box */
+    }
+
+    text.group-label {
+      font-size: 11px;
+      font-weight: 900;
+      fill: #fff;
+      letter-spacing: 0.05em;
+      pointer-events: none;
+    }
+
+    .link-layer {
+      z-index: 1;
+      overflow: visible;
+    }
+
+    .node-layer {
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .port-layer {
+      z-index: 3;
+      overflow: visible;
+      pointer-events: none;
+    }
+
+    .port-dot {
+      fill: #3d4a56;
+      stroke: #fff;
+      stroke-width: 1.5;
+      pointer-events: auto;
+      cursor: ns-resize;
+    }
+
+    .port-dot.port-collapsed {
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .port-in {
+      fill: #4a9ede;
+    }
+
+    .port-out {
+      fill: #3aaf74;
+    }
+
+    .port-return {
+      fill: #f47a30;
+    }
+
+    .node {
+      pointer-events: auto;
+    }
+
+    /* ── Multi-select highlight ── */
+    .node.multi-selected {
+      outline: 2px solid #5ba4cf;
+      outline-offset: 2px;
+    }
+
+    /* ── Box-select drag overlay ── */
+    .box-select-overlay {
+      display: none;
+      position: absolute;
+      border: 1.5px solid #5ba4cf;
+      background: rgba(91, 164, 207, 0.12);
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* ── Data status chip in canvas-head ── */
+    .data-status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 34px;
+      padding: 0 11px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.92);
+      box-shadow: 0 8px 28px rgba(30,36,44,0.08);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      pointer-events: auto;
+      white-space: nowrap;
+    }
+
+    .data-status-chip.loaded {
+      border-color: var(--ok);
+      color: var(--ok);
+    }
+
+    .data-status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      flex-shrink: 0;
+    }
+
+    /* Day reset button */
+    .day-reset-btn {
+      font-size: 10px !important;
+      padding: 0 6px !important;
+      font-weight: 700;
+    }
