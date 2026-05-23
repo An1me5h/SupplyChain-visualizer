@@ -1,0 +1,279 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Supply Chain Visualizer</title>
+  <link rel="stylesheet" href="css/base.css?v=19">
+  <link rel="stylesheet" href="css/canvas.css?v=18">
+  <link rel="stylesheet" href="css/nodes.css?v=18">
+  <link rel="stylesheet" href="css/links.css?v=18">
+  <link rel="stylesheet" href="css/panels.css?v=18">
+  <link rel="stylesheet" href="css/modals.css?v=18">
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+  <div class="app" id="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 44 44" width="30" height="30">
+            <circle cx="10" cy="22" r="4" fill="#8ce0c2"></circle>
+            <circle cx="22" cy="12" r="4" fill="# 7fb4ff"></circle>
+            <circle cx="34" cy="28" r="4" fill="#ffd27a"></circle>
+            <path d="M14 20 L19 14 M25 15 L31 25" stroke="#dff6ec" stroke-width="2" fill="none" stroke-linecap="round"></path>
+          </svg>
+        </div>
+        <div class="brand-title">
+          <h1>Supply Chain Visualizer</h1>
+          <div class="save-state" id="saveState">Autosaved locally</div>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <div class="action-tray-clip" id="actionTrayClip">
+          <div class="action-tray" id="actionTray">
+            <label class="file-label" title="Import a saved JSON network">
+              <span>Import JSON</span>
+              <input id="importJson" type="file" accept=".json,application/json">
+            </label>
+            <label class="file-label" title="Import nodes from CSV or TSV">
+              <span>Nodes CSV</span>
+              <input id="importNodesCsv" type="file" accept=".csv,.tsv,text/csv,text/tab-separated-values">
+            </label>
+            <label class="file-label" title="Import links from CSV or TSV">
+              <span>Links CSV</span>
+              <input id="importLinksCsv" type="file" accept=".csv,.tsv,text/csv,text/tab-separated-values">
+            </label>
+            <button class="action-btn" id="exportCsv" title="Export nodes.csv and links.csv">Export CSV</button>
+            <button class="action-btn" id="exportJson" title="Export a JSON copy">Export JSON</button>
+            <button class="action-btn" id="loadBackend" title="Load network from local backend">Load Backend</button>
+            <button class="action-btn" id="saveBackend" title="Save network to local backend">Save Backend</button>
+            <div class="top-divider"></div>
+            <label class="file-label accent-border" title="Upload your SAP data file (.xlsx or .csv)">
+              <span>Upload Data</span>
+              <input id="uploadData" type="file" accept=".xlsx,.xls,.csv,.tsv">
+            </label>
+            <button class="action-btn" id="openDataView" title="View loaded data table" disabled>View Data</button>
+            <button class="action-btn" id="loadDataServer" title="Auto-load data file from backend server">Load Data</button>
+            <button class="action-btn" id="refreshDataBtn" title="Re-read data file from server">Refresh</button>
+            <button class="action-btn" id="initStockBtn" title="Set initial inventory per node / part">Init Stock</button>
+            <button class="action-btn" id="openLayoutMgr" title="Save or load named layouts">Layouts</button>
+            <button class="action-btn primary" id="toggleFinal" title="Switch between edit and monitor view">Monitor View</button>
+          </div>
+        </div>
+        <button class="action-tray-toggle" id="actionTrayToggle" title="Actions">
+          <svg viewBox="0 0 4 16" width="4" height="16" fill="currentColor" aria-hidden="true">
+            <circle cx="2" cy="2"  r="1.5"/>
+            <circle cx="2" cy="8"  r="1.5"/>
+            <circle cx="2" cy="14" r="1.5"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <aside class="tool-rail" aria-label="Editor tools">
+        <button class="tool-btn active" data-tool="select" title="Select and move nodes" aria-label="Select">
+          <svg viewBox="0 0 24 24"><path d="M5 4 L18 12 L12 14 L9 20 Z"></path></svg>
+          <span class="tool-label">Select</span>
+        </button>
+        <button class="tool-btn" data-tool="add" title="Add a station node" aria-label="Add node">
+          <svg viewBox="0 0 24 24"><path d="M12 5 V19 M5 12 H19"></path></svg>
+          <span class="tool-label">Node</span>
+        </button>
+        <button class="tool-btn tool-btn-future" data-tool="compound" title="Compound node — coming in a future version" aria-label="Add compound node" disabled>
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke-width="2"></rect><path d="M8 12 H16 M12 8 V16" stroke-width="1.5"></path><rect x="6" y="6" width="5" height="5" rx="1" fill="none" stroke-width="1.2" opacity=".5"></rect></svg>
+          <span class="tool-label">Compound</span>
+          <span class="tool-future-badge">Soon</span>
+        </button>
+        <button class="tool-btn" data-tool="connect" title="Connect two nodes" aria-label="Connect nodes">
+          <svg viewBox="0 0 24 24"><path d="M7 8 H4 A2 2 0 0 0 2 10 V14 A2 2 0 0 0 4 16 H7"></path><path d="M17 8 H20 A2 2 0 0 1 22 10 V14 A2 2 0 0 1 20 16 H17"></path><path d="M8 12 H16"></path></svg>
+          <span class="tool-label">Link</span>
+        </button>
+        <button class="tool-btn" data-tool="pan" title="Pan workspace" aria-label="Pan workspace">
+          <svg viewBox="0 0 24 24"><path d="M12 3 V21"></path><path d="M3 12 H21"></path><path d="M8 7 L12 3 L16 7"></path><path d="M8 17 L12 21 L16 17"></path><path d="M7 8 L3 12 L7 16"></path><path d="M17 8 L21 12 L17 16"></path></svg>
+          <span class="tool-label">Pan</span>
+        </button>
+        <button class="tool-btn" data-tool="delete" title="Delete selected items" aria-label="Delete">
+          <svg viewBox="0 0 24 24"><path d="M4 7 H20"></path><path d="M9 7 V5 H15 V7"></path><path d="M8 10 V19 M16 10 V19 M6 7 L7 21 H17 L18 7"></path></svg>
+          <span class="tool-label">Erase</span>
+        </button>
+        <div class="rail-spacer"></div>
+        <button class="tool-btn" id="undoBtn" title="Undo last action (Ctrl+Z)" aria-label="Undo">
+          <svg viewBox="0 0 24 24"><path d="M9 14 L4 9 L9 4"></path><path d="M4 9 H15 A5 5 0 0 1 15 19 H11"></path></svg>
+          <span class="tool-label">Undo</span>
+        </button>
+        <button class="tool-btn" id="autoLayout" title="Arrange nodes left to right" aria-label="Auto layout">
+          <svg viewBox="0 0 24 24"><path d="M4 7 H10 V13 H4 Z"></path><path d="M14 5 H20 V11 H14 Z"></path><path d="M14 15 H20 V21 H14 Z"></path><path d="M10 10 H12 A2 2 0 0 1 14 8"></path><path d="M10 10 H12 A2 2 0 0 1 14 18"></path></svg>
+          <span class="tool-label">Layout</span>
+        </button>
+        <button class="tool-btn" id="resetDemo" title="Restore demo network" aria-label="Reset demo">
+          <svg viewBox="0 0 24 24"><path d="M4 12 A8 8 0 1 0 7 5"></path><path d="M4 5 V12 H11"></path></svg>
+          <span class="tool-label">Reset</span>
+        </button>
+      </aside>
+
+      <section class="canvas-shell" aria-label="Supply chain canvas">
+        <div class="canvas-head">
+          <div class="mode-chip"><span class="mode-dot"></span><span id="modeLabel">Select</span></div>
+          <div class="compound-breadcrumb" id="compoundBreadcrumb" style="display:none">
+            <button class="compound-back-btn" id="compoundBackBtn">&#8592; Back</button>
+            <span class="compound-crumb-path" id="compoundCrumbPath"></span>
+          </div>
+          <div class="selection-chip" id="selectionChip">No selection</div>
+          <button class="action-btn node-view-btn" id="nodeViewBtn" title="Open expanded node view" disabled>Node View</button>
+          <button class="action-btn node-view-btn" id="linkViewBtn" title="Open link transaction log" disabled>Link View</button>
+          <div class="data-status-chip" id="dataStatusChip"><span class="data-status-dot"></span><span id="dataStatusText">No data</span></div>
+          <div class="part-combo" id="partComboWrap">
+            <input class="part-combo-input" id="partComboInput" type="text" placeholder="Filter by part…" autocomplete="off">
+            <div class="part-combo-dropdown" id="partComboList" hidden></div>
+          </div>
+          <div class="day-filter-wrap" id="dayFilterWrap">
+            <span class="day-filter-label">Date:</span>
+            <button class="day-nav-btn" id="dayPrev" title="Previous date">&#8249;</button>
+            <input type="date" id="dayDatePicker" class="day-date-picker">
+            <button class="day-nav-btn" id="dayNext" title="Next date">&#8250;</button>
+            <span class="time-display" id="timeDisplay">00:00</span>
+            <input type="range" id="daySlider" min="0" max="47" value="0">
+            <button class="day-nav-btn day-reset-btn" id="dayReset" title="Jump to current date and time">Now</button>
+            <button class="day-filter-clear" id="dayClear" title="Clear date filter">✕</button>
+          </div>
+          <div class="zoom-controls" aria-label="Canvas zoom controls">
+            <button id="zoomOut" type="button" title="Zoom out" aria-label="Zoom out">-</button>
+            <span id="zoomValue">100%</span>
+            <button id="zoomIn" type="button" title="Zoom in" aria-label="Zoom in">+</button>
+            <button id="zoomReset" type="button" title="Reset zoom" aria-label="Reset zoom">100</button>
+          </div>
+        </div>
+        <div class="network-canvas tool-select" id="canvas" tabindex="0">
+          <svg class="group-layer" id="groupLayer" aria-hidden="true"></svg>
+          <svg class="link-layer" id="linkLayer" aria-hidden="true"></svg>
+          <div class="node-layer" id="nodeLayer"></div>
+          <svg class="port-layer" id="portLayer" aria-hidden="true"></svg>
+          <div id="boxSelectOverlay" class="box-select-overlay"></div>
+        </div>
+        <div class="node-view-overlay" id="nodeViewOverlay" aria-hidden="true"></div>
+        <div class="final-banner">Monitor view active</div>
+        <div class="toast" id="toast"></div>
+      </section>
+
+      <aside class="detail-panel">
+        <div class="panel-header">
+          <div class="panel-kicker" id="panelKicker">Network</div>
+          <div class="panel-title" id="panelTitle">Supply Chain</div>
+        </div>
+        <div class="panel-tabs">
+          <button class="panel-tab active" data-tab="edit">Edit</button>
+          <button class="panel-tab" data-tab="stats">Stats</button>
+        </div>
+        <div class="panel-body" id="panelBody"></div>
+      </aside>
+    </main>
+  </div>
+  <!-- Data viewer modal -->
+  <div class="dv-overlay" id="dataModal" aria-hidden="true">
+    <div class="dv-shell">
+      <div class="dv-head">
+        <div class="dv-title" id="dvTitle">Data File</div>
+        <div class="dv-col-config" id="dvColConfig"></div>
+        <button class="dv-close" id="dataModalClose">&times;</button>
+      </div>
+      <div class="dv-tabs" id="dvTabs"></div>
+      <div class="dv-body" id="dvBody"></div>
+    </div>
+  </div>
+
+  <!-- Layout manager modal -->
+  <div class="lm-overlay" id="layoutModal" aria-hidden="true">
+    <div class="lm-shell">
+      <div class="lm-head">
+        <span class="lm-title">Layouts</span>
+        <button class="lm-close" id="layoutModalClose">&times;</button>
+      </div>
+      <div class="lm-body" id="layoutModalBody"></div>
+    </div>
+  </div>
+
+  <!-- Startup file prompt -->
+  <div class="startup-overlay" id="startupOverlay" aria-hidden="true">
+    <div class="startup-box">
+      <div class="startup-icon">📂</div>
+      <h2 class="startup-h">Load Your Data File</h2>
+      <p class="startup-p">Upload your SAP export (.xlsx or .csv) to enable live movement tracking and flow visualization on links.</p>
+      <div class="startup-actions">
+        <label class="action-btn primary startup-upload-lbl">
+          Upload File (.xlsx / .csv)
+          <input id="uploadDataStartup" type="file" accept=".xlsx,.xls,.csv,.tsv">
+        </label>
+        <button class="action-btn" id="startupLoadServer">Load from Server</button>
+        <button class="startup-skip" id="startupSkip">Skip for now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Link view overlay -->
+  <div class="node-view-overlay lv-overlay" id="linkViewOverlay" aria-hidden="true"></div>
+
+  <!-- Column config dialog -->
+  <div class="colcfg-overlay" id="colCfgOverlay" aria-hidden="true">
+    <div class="colcfg-shell">
+      <div class="colcfg-head">
+        <span class="colcfg-title">Map Data Columns</span>
+        <span class="colcfg-subtitle" id="colCfgFilename"></span>
+      </div>
+      <p class="colcfg-desc">Data loaded. Auto-detection found the column mappings below — adjust any that look wrong, then click <strong>Confirm</strong> to re-apply. Click <strong>Skip</strong> to keep the current mapping.</p>
+      <div class="colcfg-grid" id="colCfgGrid"></div>
+      <div class="colcfg-foot">
+        <button class="action-btn primary" id="colCfgConfirm">Confirm</button>
+        <button class="action-btn" id="colCfgSkip">Skip</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Init stock popup -->
+  <div class="is-popup-overlay" id="initStockOverlay" aria-hidden="true">
+    <div class="is-popup" id="initStockPopup"></div>
+  </div>
+
+  <!-- Core state, constants, DOM refs -->
+  <script src="js/constants.js?v=17"></script>
+  <script src="js/history.js?v=17"></script>
+
+  <!-- Utility helpers (lookup, escape, viewport, graph ops) -->
+  <script src="js/helpers.js?v=17"></script>
+  <script src="js/viewport.js?v=17"></script>
+  <script src="js/graph-ops.js?v=18"></script>
+
+  <!-- Canvas geometry and rendering -->
+  <script src="js/canvas-math.js?v=17"></script>
+  <script src="js/canvas-render.js?v=17"></script>
+  <script src="js/canvas-groups.js?v=17"></script>
+  <script src="js/canvas-events.js?v=17"></script>
+
+  <!-- Data row filters, node calculations, graph helpers, normalization -->
+  <script src="js/data-rows.js?v=17"></script>
+  <script src="js/data-node.js?v=17"></script>
+  <script src="js/data-graph.js?v=17"></script>
+  <script src="js/data-normalize.js?v=17"></script>
+
+  <!-- Panel: edit forms, stats, event bindings -->
+  <script src="js/panel-edit.js?v=18"></script>
+  <script src="js/panel-stats.js?v=17"></script>
+  <script src="js/panel-bind.js?v=17"></script>
+
+  <!-- Overlays: node detail view, link transaction log -->
+  <script src="js/node-view.js?v=17"></script>
+  <script src="js/link-view.js?v=17"></script>
+
+  <!-- Layout manager, network I/O, data file I/O, toolbar -->
+  <script src="js/layout.js?v=17"></script>
+  <script src="js/io-network.js?v=17"></script>
+  <script src="js/io-data.js?v=17"></script>
+  <script src="js/toolbar-events.js?v=18"></script>
+
+  <!-- App init -->
+  <script src="app.js?v=17"></script>
+</body>
+</html>
+

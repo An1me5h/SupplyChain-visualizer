@@ -1,0 +1,17 @@
+node_modules/
+.env
+*.log
+Thumbs.db
+.DS_Store
+
+# Local SAP data files — keep off GitHub
+data/
+*.xlsx
+*.xls
+*.csv
+
+# Old superseded CSS file
+styles.css
+
+# Internal Claude session notes
+ForClaudeUseOnly.md

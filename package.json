@@ -1,0 +1,10 @@
+{
+  "name": "supply-chain-visualizer",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Node-link supply chain visualizer and table-backed editor.",
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check app.js && node --check server.js"
+  }
+}
