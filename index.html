@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="css/nodes.css?v=18">
   <link rel="stylesheet" href="css/links.css?v=18">
   <link rel="stylesheet" href="css/panels.css?v=18">
-  <link rel="stylesheet" href="css/modals.css?v=18">
+  <link rel="stylesheet" href="css/modals.css?v=19">
   <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 </head>
 <body>
@@ -199,15 +199,15 @@
   <div class="startup-overlay" id="startupOverlay" aria-hidden="true">
     <div class="startup-box">
       <div class="startup-icon">📂</div>
-      <h2 class="startup-h">Load Your Data File</h2>
-      <p class="startup-p">Upload your SAP export (.xlsx or .csv) to enable live movement tracking and flow visualization on links.</p>
+      <h2 class="startup-h">Supply Chain Visualizer</h2>
+      <p class="startup-p">How would you like to start?</p>
       <div class="startup-actions">
         <label class="action-btn primary startup-upload-lbl">
-          Upload File (.xlsx / .csv)
+          Upload File &amp; Start Fresh
           <input id="uploadDataStartup" type="file" accept=".xlsx,.xls,.csv,.tsv">
         </label>
-        <button class="action-btn" id="startupLoadServer">Load from Server</button>
-        <button class="startup-skip" id="startupSkip">Skip for now</button>
+        <button class="action-btn startup-demo-btn" id="startupSkip">Use Demo Data</button>
+        <button class="action-btn" id="startupLoadServer" disabled title="Requires a locally running server">Load from Server</button>
       </div>
     </div>
   </div>
@@ -237,7 +237,7 @@
   </div>
 
   <!-- Core state, constants, DOM refs -->
-  <script src="js/constants.js?v=17"></script>
+  <script src="js/constants.js?v=20"></script>
   <script src="js/history.js?v=17"></script>
 
   <!-- Utility helpers (lookup, escape, viewport, graph ops) -->
@@ -269,7 +269,7 @@
   <!-- Layout manager, network I/O, data file I/O, toolbar -->
   <script src="js/layout.js?v=17"></script>
   <script src="js/io-network.js?v=17"></script>
-  <script src="js/io-data.js?v=17"></script>
+  <script src="js/io-data.js?v=20"></script>
   <script src="js/toolbar-events.js?v=18"></script>
 
   <!-- App init -->

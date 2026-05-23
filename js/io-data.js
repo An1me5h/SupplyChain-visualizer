@@ -274,6 +274,32 @@
       if (e.target === document.getElementById("dataModal")) closeDataView();
     });
 
+    // ── Demo Data Loader ─────────────────────────────────────────────────────
+
+    async function loadDemoData() {
+      try {
+        const res = await fetch("demo/data.csv");
+        if (!res.ok) return;
+        if (typeof XLSX === "undefined") return;
+        const text = await res.text();
+        const wb = XLSX.read(text, { type: "string", cellDates: true });
+        const firstSheet = wb.SheetNames[0];
+        if (!firstSheet) return;
+        state.movColumn     = "Mvt_Type";
+        state.dateColumn    = "Posting_Date";
+        state.qtyColumn     = "Quantity";
+        state.partColumn    = "Part_No";
+        state.timeColumn    = "Time";
+        state.srcSlocColumn = "SLoc_From";
+        state.dstSlocColumn = "SLoc_To";
+        const { headers, rows } = parseSheetRows(wb.Sheets[firstSheet]);
+        applyRawData(headers, rows, "Demo Data", { skipDialog: true });
+        persist();
+      } catch {
+        // No demo data bundled — app works without it
+      }
+    }
+
     // ── Startup Overlay ───────────────────────────────────────────────────────
 
     function showStartupOverlay() {
@@ -290,10 +316,9 @@
       el.setAttribute("aria-hidden", "true");
     }
 
-    document.getElementById("startupSkip").addEventListener("click", closeStartupOverlay);
-    document.getElementById("startupLoadServer").addEventListener("click", async () => {
+    document.getElementById("startupSkip").addEventListener("click", async () => {
       closeStartupOverlay();
-      await autoLoadDataFile();
+      await loadDemoData();
     });
 
     function handleFileInput(file) {
@@ -304,6 +329,14 @@
     }
 
     document.getElementById("uploadDataStartup").addEventListener("change", (e) => {
+      pushHistory();
+      state.nodes          = [];
+      state.links          = [];
+      state.groups         = [];
+      state.selectedKind   = null;
+      state.selectedId     = null;
+      state.multiSelectedIds = [];
+      persist();
       handleFileInput(e.target.files[0]);
       closeStartupOverlay();
       e.target.value = "";
