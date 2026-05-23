@@ -3,6 +3,13 @@
 An interactive, browser-based supply chain network editor and flow visualizer.  
 No build tools, no dependencies beyond a local Node.js server for file persistence.
 
+# My Vision
+I built this tool to solve a simple daily frustration: finding out where stock actually is right now required digging through SAP and exporting data manually. This program reads a standard Excel export from SAP and instantly shows me the current stock position — no login, no navigation, no waiting.
+
+The bigger vision is to grow this into a full product lifecycle tracker. In the future it should show the complete pipeline — not just where inventory sits today, but how a product evolves: design revisions, engineering changes, quality defects caught in production, and complaints that come in from customers. The goal is one view that tells the whole story of a product from design to delivery, with every deviation and complaint tied back to the right version of the product at the right point in time.
+
+For now it starts simple: an Excel file in, a clear picture out.
+
 ---
 
 ## Features
