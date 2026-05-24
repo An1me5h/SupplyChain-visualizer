@@ -278,22 +278,15 @@
 
     async function loadDemoData() {
       try {
-        const res = await fetch("demo/data.csv");
+        const res = await fetch("demo/SAP_FlowOrdered_Log.xlsx");
         if (!res.ok) return;
         if (typeof XLSX === "undefined") return;
-        const text = await res.text();
-        const wb = XLSX.read(text, { type: "string", cellDates: true });
+        const buf = await res.arrayBuffer();
+        const wb = XLSX.read(new Uint8Array(buf), { type: "array", cellDates: true });
         const firstSheet = wb.SheetNames[0];
         if (!firstSheet) return;
-        state.movColumn     = "Mvt_Type";
-        state.dateColumn    = "Posting_Date";
-        state.qtyColumn     = "Quantity";
-        state.partColumn    = "Part_No";
-        state.timeColumn    = "Time";
-        state.srcSlocColumn = "SLoc_From";
-        state.dstSlocColumn = "SLoc_To";
         const { headers, rows } = parseSheetRows(wb.Sheets[firstSheet]);
-        applyRawData(headers, rows, "Demo Data", { skipDialog: true });
+        applyRawData(headers, rows, "Demo Data", { skipDialog: false });
         persist();
       } catch {
         // No demo data bundled — app works without it
