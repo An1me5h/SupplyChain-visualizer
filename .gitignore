@@ -5,14 +5,15 @@ Thumbs.db
 .DS_Store
 
 # Local SAP data files — keep off GitHub
-data/
+data/*
 *.xlsx
 *.xls
 *.csv
 
-# But allow the bundled demo dataset
+# But allow the bundled demo dataset and example network
 !demo/
 !demo/*
+!data/Example_supply-chain-network.json
 
 # Old superseded CSS file
 styles.css
