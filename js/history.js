@@ -39,7 +39,7 @@
       return Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, numberValue(value, 1)));
     }
 
-    function loadInitialState() {
+    async function loadInitialState() {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (!saved) {
         const layouts = getSavedLayouts();
@@ -47,9 +47,22 @@
         if (latest) {
           applyLayoutToState(latest);
         } else {
-          Object.assign(state, clone(demoState));
-          state.finalFields = { ...DEFAULT_FINAL_FIELDS };
-          state.zoom = 1;
+          try {
+            const res = await fetch("data/Example_supply-chain-network.json");
+            if (res.ok) {
+              const json = await res.json();
+              Object.assign(state, clone(json));
+              state.finalFields = { ...DEFAULT_FINAL_FIELDS, ...(json.finalFields || {}) };
+            } else {
+              Object.assign(state, clone(demoState));
+              state.finalFields = { ...DEFAULT_FINAL_FIELDS };
+              state.zoom = 1;
+            }
+          } catch {
+            Object.assign(state, clone(demoState));
+            state.finalFields = { ...DEFAULT_FINAL_FIELDS };
+            state.zoom = 1;
+          }
         }
         return;
       }
