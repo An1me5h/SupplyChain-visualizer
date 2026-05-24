@@ -164,6 +164,10 @@
 
     // ── Refresh Data Button ───────────────────────────────────────────────────
     document.getElementById("refreshDataBtn").addEventListener("click", () => {
+      if (!['localhost','127.0.0.1'].includes(location.hostname)) {
+        showToast("Refresh only works when the app is run locally on your machine.");
+        return;
+      }
       autoLoadDataFile({ isRefresh: true }).catch(() => showToast("Could not reload — server not running."));
     });
 
