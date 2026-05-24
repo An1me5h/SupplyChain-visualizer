@@ -347,5 +347,16 @@
       else showToast("No data loaded yet.");
     });
 
-    document.getElementById("loadDataServer").addEventListener("click", () => autoLoadDataFile());
+    document.getElementById("openDataViewRail").addEventListener("click", () => {
+      if (state.rawData.length) openDataView();
+      else showToast("No data loaded yet.");
+    });
+
+    document.getElementById("loadDataServer").addEventListener("click", () => {
+      if (!['localhost','127.0.0.1'].includes(location.hostname)) {
+        showToast("Load Data only works when the app is run locally on your machine.");
+        return;
+      }
+      autoLoadDataFile();
+    });
     document.getElementById("openLayoutMgr").addEventListener("click", openLayoutMgr);
