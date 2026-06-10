@@ -128,6 +128,59 @@ function nodeRegisterValues(node) {
   return result;
 }
 
+// Scans all rawData rows in order and returns a Set of row indices where an
+// outgoing movement from a standard node exceeds the available inventory for
+// that part at that moment (i.e. the node can't fulfill the movement).
+function computeInventoryViolations() {
+  const stdNodes = state.nodes.filter(n => n.nodeClass === "");
+  if (!stdNodes.length || !state.rawData.length || !state.movColumn) return new Set();
+
+  const nodeOutLinks = {};
+  const nodeInLinks  = {};
+  stdNodes.forEach(n => {
+    nodeOutLinks[n.id] = state.links.filter(l => l.source === n.id && l.movCode);
+    nodeInLinks[n.id]  = state.links.filter(l => l.target === n.id && l.movCode);
+  });
+
+  const inv = {};
+  stdNodes.forEach(n => {
+    inv[n.id] = {};
+    Object.entries(n.initStock || {}).forEach(([part, qty]) => {
+      inv[n.id][part] = numberValue(qty) || 0;
+    });
+  });
+
+  const violations = new Set();
+
+  state.rawData.forEach((row, idx) => {
+    const part = state.partColumn ? String(row[state.partColumn] || "").trim() : "";
+    const qty  = state.qtyColumn  ? (numberValue(row[state.qtyColumn]) || 1) : 1;
+
+    for (const node of stdNodes) {
+      let isOut = false;
+      for (const l of nodeOutLinks[node.id]) {
+        if (rowMatchesLink(row, l)) {
+          const cur = inv[node.id][part] || 0;
+          if (cur < qty) violations.add(idx);
+          inv[node.id][part] = cur - qty;
+          isOut = true;
+          break;
+        }
+      }
+      if (!isOut) {
+        for (const l of nodeInLinks[node.id]) {
+          if (rowMatchesLink(row, l)) {
+            inv[node.id][part] = (inv[node.id][part] || 0) + qty;
+            break;
+          }
+        }
+      }
+    }
+  });
+
+  return violations;
+}
+
 // Inventory time series for one part on one date (48 half-hour slots)
 function nodeInventoryTimeSeries(node, part, date) {
   if (!state.rawData.length || !state.movColumn || !date) return Array(48).fill(0);

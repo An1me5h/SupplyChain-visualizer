@@ -114,6 +114,7 @@ const STORAGE_KEY = "supply-chain-visualizer-v2";
       timeColumn: "",
       srcSlocColumn: "",
       dstSlocColumn: "",
+      inventoryViolations: new Set(),
     };
 
     // ── DOM references ────────────────────────────────────────────────────────

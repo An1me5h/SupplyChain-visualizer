@@ -4,12 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Supply Chain Visualizer</title>
+  <link rel="icon" type="image/png" href="SCV.png">
   <link rel="stylesheet" href="css/base.css?v=19">
-  <link rel="stylesheet" href="css/canvas.css?v=18">
+  <link rel="stylesheet" href="css/canvas.css?v=21">
   <link rel="stylesheet" href="css/nodes.css?v=18">
   <link rel="stylesheet" href="css/links.css?v=18">
   <link rel="stylesheet" href="css/panels.css?v=18">
-  <link rel="stylesheet" href="css/modals.css?v=19">
+  <link rel="stylesheet" href="css/modals.css?v=21">
   <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 </head>
 <body>
@@ -135,6 +136,7 @@
           <button class="action-btn node-view-btn" id="nodeViewBtn" title="Open expanded node view" disabled>Node View</button>
           <button class="action-btn node-view-btn" id="linkViewBtn" title="Open link transaction log" disabled>Link View</button>
           <div class="data-status-chip" id="dataStatusChip"><span class="data-status-dot"></span><span id="dataStatusText">No data</span></div>
+          <button class="dv-caution-btn" id="dvCautionBtn" title="Inventory violations detected — click to view data" style="display:none">&#9888; Violations: <span id="dvCautionCount">0</span></button>
           <div class="part-combo" id="partComboWrap">
             <input class="part-combo-input" id="partComboInput" type="text" placeholder="Filter by part…" autocomplete="off">
             <div class="part-combo-dropdown" id="partComboList" hidden></div>
@@ -247,7 +249,7 @@
   </div>
 
   <!-- Core state, constants, DOM refs -->
-  <script src="js/constants.js?v=20"></script>
+  <script src="js/constants.js?v=21"></script>
   <script src="js/history.js?v=17"></script>
 
   <!-- Utility helpers (lookup, escape, viewport, graph ops) -->
@@ -257,20 +259,20 @@
 
   <!-- Canvas geometry and rendering -->
   <script src="js/canvas-math.js?v=17"></script>
-  <script src="js/canvas-render.js?v=17"></script>
+  <script src="js/canvas-render.js?v=22"></script>
   <script src="js/canvas-groups.js?v=17"></script>
   <script src="js/canvas-events.js?v=17"></script>
 
   <!-- Data row filters, node calculations, graph helpers, normalization -->
   <script src="js/data-rows.js?v=17"></script>
-  <script src="js/data-node.js?v=17"></script>
+  <script src="js/data-node.js?v=21"></script>
   <script src="js/data-graph.js?v=17"></script>
   <script src="js/data-normalize.js?v=17"></script>
 
   <!-- Panel: edit forms, stats, event bindings -->
   <script src="js/panel-edit.js?v=18"></script>
   <script src="js/panel-stats.js?v=17"></script>
-  <script src="js/panel-bind.js?v=17"></script>
+  <script src="js/panel-bind.js?v=21"></script>
 
   <!-- Overlays: node detail view, link transaction log -->
   <script src="js/node-view.js?v=17"></script>
@@ -279,7 +281,7 @@
   <!-- Layout manager, network I/O, data file I/O, toolbar -->
   <script src="js/layout.js?v=17"></script>
   <script src="js/io-network.js?v=17"></script>
-  <script src="js/io-data.js?v=20"></script>
+  <script src="js/io-data.js?v=21"></script>
   <script src="js/toolbar-events.js?v=18"></script>
 
   <!-- App init -->

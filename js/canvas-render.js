@@ -114,16 +114,17 @@ function renderNodes() {
   const hlPart = state.highlightPart;
   let hlNodes = null;
   if (hlPart && state.rawData.length && state.partColumn && state.movColumn) {
-    const partCodes = new Set();
-    state.rawData.forEach(row => {
-      if (String(row[state.partColumn] || "").trim() !== hlPart) return;
-      const code = String(row[state.movColumn] || "").trim();
-      if (code) partCodes.add(code);
-    });
     hlNodes = new Set();
     state.nodes.forEach(n => {
-      const inLinks = state.links.filter(l => l.target === n.id && l.movCode);
-      if (inLinks.some(l => partCodes.has(l.movCode))) hlNodes.add(n.id);
+      const inLinks  = state.links.filter(l => l.target === n.id && l.movCode);
+      const outLinks = state.links.filter(l => l.source === n.id && l.movCode);
+      const allLinks = [...inLinks, ...outLinks];
+      if (!allLinks.length) return;
+      const hasMatch = state.rawData.some(row => {
+        if (String(row[state.partColumn] || "").trim() !== hlPart) return false;
+        return allLinks.some(l => rowMatchesLink(row, l));
+      });
+      if (hasMatch) hlNodes.add(n.id);
     });
   }
 

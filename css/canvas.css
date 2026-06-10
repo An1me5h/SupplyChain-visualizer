@@ -477,6 +477,27 @@
       flex-shrink: 0;
     }
 
+    /* ── Inventory violation caution button in canvas-head ── */
+    .dv-caution-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      height: 34px;
+      padding: 0 12px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      background: #e07a00;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(224,122,0,0.35);
+      transition: background 0.15s;
+      pointer-events: auto;
+    }
+    .dv-caution-btn:hover { background: #c46800; }
+
     /* Day reset button */
     .day-reset-btn {
       font-size: 10px !important;

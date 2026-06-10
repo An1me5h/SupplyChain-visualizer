@@ -86,6 +86,16 @@
       }
     }
 
+    function updateCautionBadge() {
+      const btn   = document.getElementById("dvCautionBtn");
+      const count = document.getElementById("dvCautionCount");
+      if (!btn) return;
+      state.inventoryViolations = computeInventoryViolations();
+      const n = state.inventoryViolations.size;
+      btn.style.display = n > 0 ? "" : "none";
+      if (count) count.textContent = n;
+    }
+
     function parseSheetRows(ws) {
       // header:1 returns a 2D array — guarantees every column is captured even if
       // some header cells are blank or rows have trailing empty cells
@@ -262,11 +272,14 @@
       const tbody = document.getElementById("dvTableBody");
       if (!tbody) return;
       const data = rows || state.rawData.slice(0, 2000);
-      tbody.innerHTML = data.map(row =>
-        `<tr>${state.rawHeaders.map(h =>
+      const viol = state.inventoryViolations || new Set();
+      // data[i] is always state.rawData[i] (prefix slice), so index i matches violation set
+      tbody.innerHTML = data.map((row, i) => {
+        const rowClass = viol.has(i) ? ' class="dv-violation"' : "";
+        return `<tr${rowClass}>${state.rawHeaders.map(h =>
           `<td class="${h === state.movColumn ? "dv-col-hi" : ""}">${escapeHtml(String(row[h] ?? ""))}</td>`
-        ).join("")}</tr>`
-      ).join("");
+        ).join("")}</tr>`;
+      }).join("");
     }
 
     document.getElementById("dataModalClose").addEventListener("click", closeDataView);
@@ -360,3 +373,11 @@
       autoLoadDataFile();
     });
     document.getElementById("openLayoutMgr").addEventListener("click", openLayoutMgr);
+
+    document.getElementById("dvCautionBtn").addEventListener("click", () => {
+      openDataView();
+      requestAnimationFrame(() => {
+        const firstViol = document.querySelector(".dv-table tr.dv-violation");
+        if (firstViol) firstViol.scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+    });

@@ -515,6 +515,18 @@
       color: var(--accent);
     }
 
+    /* inventory violation rows — orange highlight */
+    .dv-table tr.dv-violation td {
+      background: rgba(224, 122, 0, 0.18);
+      border-left: 2px solid #e07a00;
+    }
+    .dv-table tr.dv-violation:hover td {
+      background: rgba(224, 122, 0, 0.32);
+    }
+    .dv-table tr.dv-violation td.dv-col-hi {
+      background: rgba(224, 122, 0, 0.26);
+    }
+
     /* ── Sheet Tabs (data viewer) ── */
     .dv-tabs {
       display: flex;

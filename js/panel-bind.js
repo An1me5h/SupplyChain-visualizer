@@ -276,6 +276,7 @@ function render() {
   renderPanel();
   updateNodeViewButton();
   updateLinkViewButton();
+  updateCautionBadge();
 }
 
 function updateNodeViewButton() {
