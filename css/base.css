@@ -75,10 +75,9 @@
       height: 42px;
       display: grid;
       place-items: center;
-      border: 1px solid #16221f;
-      border-radius: 8px;
-      background: #15201d;
-      color: #dff6ec;
+      border-radius: 10px;
+      background: transparent;
+      overflow: hidden;
       flex: 0 0 auto;
     }
 
