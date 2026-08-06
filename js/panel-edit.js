@@ -215,6 +215,7 @@ function renderNetworkStats() {
         </tbody>
       </table>
     </div>
+    ${typeof renderLifecycleStageStats === "function" ? renderLifecycleStageStats() : ""}
   `;
 }
 
@@ -386,6 +387,7 @@ function renderNodeEdit(node) {
       ${nc !== "transit" && nc !== "source" && nc !== "end" ? selectField("Status", "status", node.status) : ""}
       ${nc !== "transit" && nc !== "source" && nc !== "end" ? inputField("Owner", "owner", node.owner) : ""}
       ${nc !== "transit" ? inputField("Location", "location", node.location) : ""}
+      ${typeof lifecycleStageSelectField === "function" ? lifecycleStageSelectField(node.lifecycleStage || "") : ""}
       ${nc !== "transit" ? nodeCodeSelectField(node.nodeCode || "") : ""}
       <div class="field full">
         <label for="field-description">Description</label>

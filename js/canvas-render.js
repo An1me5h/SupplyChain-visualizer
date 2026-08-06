@@ -76,6 +76,8 @@ function renderLinks() {
 
   linkLayer.innerHTML = defs + links;
   renderPorts();
+  // innerHTML rebuild wiped any lifecycle overlay classes -- re-apply them.
+  if (typeof scheduleLifecycleOverlay === "function") scheduleLifecycleOverlay();
 }
 
 function linkBadgeText(link) {
@@ -148,6 +150,8 @@ function renderNodes() {
     const collapseIcon = node.collapsed ? "&#9654;" : "&#9660;";
     const collapseTitle = node.collapsed ? "Expand" : "Collapse";
     const collapseBtn = `<button class="node-collapse-btn" data-node-id="${escapeAttr(node.id)}" title="${collapseTitle}">${collapseIcon}</button>`;
+    const stageInfo  = typeof lifecycleStageInfo === "function" ? lifecycleStageInfo(node.lifecycleStage) : null;
+    const stageChip  = stageInfo ? `<span class="node-stage-chip" style="background:${stageInfo.color}">${escapeHtml(stageInfo.label)}</span>` : "";
     const baseAttrs  = `data-node-id="${escapeAttr(node.id)}" style="--x:${numberValue(node.x)}px;--y:${numberValue(node.y)}px${nodeColorStyle}${heightStyle}"`;
 
     return `
@@ -157,7 +161,7 @@ function renderNodes() {
           <div class="node-title" title="${escapeAttr(node.label)}">${escapeHtml(node.label)}</div>
           ${node.nodeClass === "compound" ? `<span class="nc-badge">&#9654;&#9654;</span>` : collapseBtn}
         </div>
-        ${meta ? `<div class="node-type">${escapeHtml(meta)}</div>` : ""}
+        ${meta || stageChip ? `<div class="node-type">${escapeHtml(meta)}${stageChip}</div>` : ""}
         ${chips.length ? `<div class="node-metrics">${chips.map((m) => `
           <div class="node-metric${m.neg ? " neg-inv" : ""}${m.cls ? " " + m.cls : ""}">
             <span>${escapeHtml(m.label)}</span><strong>${escapeHtml(String(m.value))}</strong>
@@ -180,6 +184,9 @@ function renderNodes() {
       el.classList.remove("part-highlight-link", "part-dimmed-link");
     });
   }
+
+  // innerHTML rebuild wiped any lifecycle badges/chips -- re-apply them.
+  if (typeof scheduleLifecycleOverlay === "function") scheduleLifecycleOverlay();
 }
 
 function nodeMetaText(node) {

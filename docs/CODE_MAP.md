@@ -153,3 +153,26 @@ When a data row arrives at a node, the rules decide which outgoing link it shoul
 - **Export to image / PDF** — snapshot the canvas as a PNG or PDF for reports and presentations.
 - **Alert rules** — define thresholds (e.g. "inventory below 50 → turn node red") that trigger status changes automatically when data is loaded.
 - **Multi-file data merge** — load more than one SAP export at once and merge them by date range.
+
+### Part Journey Traceability (UI name: "Journey" / "Flow Stage")
+
+Phase 1 (part journey view) and Phase 2 (flow stage tags on nodes) are **implemented** — see
+`js/lifecycle.js` and `css/lifecycle.css` (internal names keep the lifecycle* prefix; do not rename
+— saved data depends on the field names). The theory: every movement row is a traceability event
+(WHAT part/qty, WHEN date/time, WHERE from→to, WHY movement code); the ordered chain of events is
+the part's "digital product passport", and stage tags (Raw Material → Production → Quality →
+Finished Goods → Distribution → Customer → Returns → End of Life) turn locations into flow stages.
+
+Still planned:
+
+- **Batch / serial-level trace** — map a Batch column and trace individual lots FIFO instead of aggregate quantities.
+- **Part passport export** — download one part's full journey as CSV/PDF report.
+- **Stage-duration analytics** — how long parts sit in each flow stage; bottleneck view.
+
+### Product Development Lifecycle Board (planned, not started)
+
+A separate board — not the supply-chain canvas — where nodes are **departments / design gates**
+(DFMEA, GD&T, CAE, testing/DVP&R, PFMEA, PPAP...) and the data that transfers is the **design
+itself**. Each gate must give **permission / verification** (an approve/reject sign-off) before the
+deliverable passes to the next department, following the APQP stage-gate process. Full plan sketch
+lives in `ForClaudeUseOnly.md` → Open / Planned Work item 7.

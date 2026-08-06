@@ -45,6 +45,7 @@ function normalizeNodes(nodes) {
       initStock,
       rules,
       nodeClass:       nc,
+      lifecycleStage:  typeof node.lifecycleStage === "string" ? node.lifecycleStage : "",
       innerNodes:      Array.isArray(node.innerNodes)  ? node.innerNodes  : [],
       innerLinks:      Array.isArray(node.innerLinks)  ? node.innerLinks  : [],
       innerGroups:     Array.isArray(node.innerGroups) ? node.innerGroups : [],

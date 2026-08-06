@@ -9,8 +9,9 @@
   <link rel="stylesheet" href="css/canvas.css?v=21">
   <link rel="stylesheet" href="css/nodes.css?v=18">
   <link rel="stylesheet" href="css/links.css?v=18">
-  <link rel="stylesheet" href="css/panels.css?v=18">
+  <link rel="stylesheet" href="css/panels.css?v=23">
   <link rel="stylesheet" href="css/modals.css?v=21">
+  <link rel="stylesheet" href="css/lifecycle.css?v=23">
   <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 </head>
 <body>
@@ -136,6 +137,7 @@
             <input class="part-combo-input" id="partComboInput" type="text" placeholder="Filter by part…" autocomplete="off">
             <div class="part-combo-dropdown" id="partComboList" hidden></div>
           </div>
+          <button class="lc-btn" id="lifecycleBtn" title="Trace the selected part's journey through the chain" style="display:none">&#8635; Journey</button>
           <div class="day-filter-wrap" id="dayFilterWrap">
             <span class="day-filter-label">Date:</span>
             <button class="day-nav-btn" id="dayPrev" title="Previous date">&#8249;</button>
@@ -161,6 +163,14 @@
           <div id="boxSelectOverlay" class="box-select-overlay"></div>
         </div>
         <div class="node-view-overlay" id="nodeViewOverlay" aria-hidden="true"></div>
+        <div class="lc-drawer" id="lifecycleDrawer" aria-hidden="true">
+          <div class="lc-drawer-head">
+            <span class="lc-drawer-title">Part Journey</span>
+            <span class="lc-drawer-sub" id="lcDrawerSub"></span>
+            <button class="lc-drawer-close" id="lcDrawerClose" title="Close lifecycle view">&times;</button>
+          </div>
+          <div class="lc-drawer-body" id="lcDrawerBody"></div>
+        </div>
         <div class="final-banner">Monitor view active</div>
         <div class="toast" id="toast"></div>
       </section>
@@ -244,7 +254,7 @@
   </div>
 
   <!-- Core state, constants, DOM refs -->
-  <script src="js/constants.js?v=21"></script>
+  <script src="js/constants.js?v=23"></script>
   <script src="js/history.js?v=17"></script>
 
   <!-- Utility helpers (lookup, escape, viewport, graph ops) -->
@@ -254,7 +264,7 @@
 
   <!-- Canvas geometry and rendering -->
   <script src="js/canvas-math.js?v=17"></script>
-  <script src="js/canvas-render.js?v=22"></script>
+  <script src="js/canvas-render.js?v=23"></script>
   <script src="js/canvas-groups.js?v=17"></script>
   <script src="js/canvas-events.js?v=17"></script>
 
@@ -262,16 +272,17 @@
   <script src="js/data-rows.js?v=17"></script>
   <script src="js/data-node.js?v=21"></script>
   <script src="js/data-graph.js?v=17"></script>
-  <script src="js/data-normalize.js?v=17"></script>
+  <script src="js/data-normalize.js?v=23"></script>
 
   <!-- Panel: edit forms, stats, event bindings -->
-  <script src="js/panel-edit.js?v=18"></script>
-  <script src="js/panel-stats.js?v=17"></script>
+  <script src="js/panel-edit.js?v=23"></script>
+  <script src="js/panel-stats.js?v=23"></script>
   <script src="js/panel-bind.js?v=21"></script>
 
-  <!-- Overlays: node detail view, link transaction log -->
+  <!-- Overlays: node detail view, link transaction log, part lifecycle -->
   <script src="js/node-view.js?v=17"></script>
   <script src="js/link-view.js?v=17"></script>
+  <script src="js/lifecycle.js?v=24"></script>
 
   <!-- Layout manager, network I/O, data file I/O, toolbar -->
   <script src="js/layout.js?v=17"></script>

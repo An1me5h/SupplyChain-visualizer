@@ -44,6 +44,32 @@
   `;
 }
 
+// -- Transaction log scope: selected day only, or full history up to that day --
+
+function setTxnScope(scope) {
+  state.txnScope = scope === "history" ? "history" : "day";
+  renderPanel();
+}
+
+// Two pill buttons above the transaction log. Only shown while a date filter
+// is active -- without one the log already lists every date.
+function txnScopeToggleHtml() {
+  if (!state.selectedDate) return "";
+  const scope = state.txnScope || "day";
+  return `
+    <div class="tx-scope-row">
+      <button class="tx-scope-btn${scope === "day" ? " active" : ""}" onclick="setTxnScope('day')">This Day</button>
+      <button class="tx-scope-btn${scope === "history" ? " active" : ""}" onclick="setTxnScope('history')">Full History</button>
+    </div>`;
+}
+
+// Date test for one log row: "day" = only the selected date,
+// "history" = everything from the past up to and including the selected date.
+function txnRowInScope(row) {
+  if ((state.txnScope || "day") === "history") return rowBeforeOrOnDate(row);
+  return rowMatchesDate(row);
+}
+
 function renderTransitStats(node) {
   const inLinks  = state.links.filter(l => l.target === node.id && l.movCode);
   const outLinks = state.links.filter(l => l.source === node.id && l.movCode);
@@ -78,14 +104,17 @@ function renderTransitStats(node) {
 
   const filtered = rows
     .filter(r => {
-      if (!rowMatchesDate(r._raw)) return false;
+      if (!txnRowInScope(r._raw)) return false;
       if (state.highlightPart && r.part !== state.highlightPart) return false;
       return true;
     })
     .reverse();
 
+  const isHistory = state.selectedDate && (state.txnScope || "day") === "history";
   const timeLabel = state.selectedDate && state.selectedTimeSlot > 0 ? " " + slotToTime(state.selectedTimeSlot) : "";
-  const dateLabel = state.selectedDate ? state.selectedDate + timeLabel : "All dates";
+  const dateLabel = state.selectedDate
+    ? (isHistory ? "up to " : "") + state.selectedDate + timeLabel
+    : "All dates";
   const totalQty  = filtered.reduce((s, r) => s + r.qty, 0);
 
   return `
@@ -94,6 +123,7 @@ function renderTransitStats(node) {
       <div class="metric-tile"><span>Rows shown</span><strong>${filtered.length}</strong></div>
     </div>
     <div class="section-title">Transit Log - ${escapeHtml(dateLabel)}${state.highlightPart ? " / " + escapeHtml(state.highlightPart) : ""}</div>
+    ${txnScopeToggleHtml()}
     ${filtered.length === 0
       ? `<div class="tx-no-data">No transactions match the current filters.</div>`
       : `<div class="tx-log-wrap">
@@ -147,7 +177,7 @@ function renderNodeStats(node) {
 
   const filtered = rows
     .filter(r => {
-      if (!rowMatchesDate(r._raw)) return false;
+      if (!txnRowInScope(r._raw)) return false;
       if (state.highlightPart && r.part !== state.highlightPart) return false;
       return true;
     })
@@ -157,8 +187,11 @@ function renderNodeStats(node) {
   const isSource = node.nodeClass === "source";
   const isEnd    = node.nodeClass === "end";
   const totalReturns = isSource ? nodeReturnQty(node) : 0;
+  const isHistory = state.selectedDate && (state.txnScope || "day") === "history";
   const timeLabel = state.selectedDate && state.selectedTimeSlot > 0 ? " " + slotToTime(state.selectedTimeSlot) : "";
-  const dateLabel = state.selectedDate ? state.selectedDate + timeLabel : "All dates";
+  const dateLabel = state.selectedDate
+    ? (isHistory ? "up to " : "") + state.selectedDate + timeLabel
+    : "All dates";
   const invLabel  = isSource ? "Sent" : isEnd ? "Arrived" : "Inventory";
 
   return `
@@ -168,6 +201,7 @@ function renderNodeStats(node) {
       <div class="metric-tile"><span>Rows shown</span><strong>${filtered.length}</strong></div>
     </div>
     <div class="section-title">Transaction Log - ${escapeHtml(dateLabel)}${state.highlightPart ? " / " + escapeHtml(state.highlightPart) : ""}</div>
+    ${txnScopeToggleHtml()}
     ${filtered.length === 0
       ? `<div class="tx-no-data">No transactions match the current filters.</div>`
       : `<div class="tx-log-wrap">
